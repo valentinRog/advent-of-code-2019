@@ -2,7 +2,9 @@ const std = @import("std");
 
 pub fn main() !void {
     const stdin = std.io.getStdIn().reader();
-    const alloc = std.heap.page_allocator;
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
+	const alloc = gpa.allocator();
     const ws = "\n\r ";
     const data = try stdin.readAllAlloc(alloc, 1 << 16);
     defer alloc.free(data);
