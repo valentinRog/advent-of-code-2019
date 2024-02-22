@@ -5,6 +5,7 @@ pub fn main() !void {
     const alloc = std.heap.page_allocator;
     const ws = "\n\r ";
     const data = try stdin.readAllAlloc(alloc, 1 << 16);
+    defer alloc.free(data);
     var it = std.mem.split(u8, std.mem.trim(u8, data, ws), "\n");
     var res: i32 = 0;
     while (it.next()) |s| {
