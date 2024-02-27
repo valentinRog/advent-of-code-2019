@@ -48,7 +48,7 @@ pub fn main() !void {
         circuits[0] = try parseCircuit(alloc, it.next().?);
         circuits[1] = try parseCircuit(alloc, it.next().?);
     }
-    var res: u32 = std.math.maxInt(i32);
+    var res: u32 = std.math.maxInt(u32);
     {
         var it = circuits[0].keyIterator();
         while (it.next()) |p| {
