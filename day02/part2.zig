@@ -1,26 +1,26 @@
 const std = @import("std");
 
-fn simulate(l: std.ArrayList(u32), noun: u32, verb: u32) u32 {
-    l.items[1] = noun;
-    l.items[2] = verb;
+fn simulate(alloc: std.mem.Allocator, data: []u32, noun: u32, verb: u32) !u32 {
+    const a = try alloc.dupe(u32, data);
+    defer alloc.free(a);
+    a[1] = noun;
+    a[2] = verb;
     var i: usize = 0;
     while (true) : (i += 4) {
-        switch (l.items[i]) {
-            1 => l.items[l.items[i + 3]] = l.items[l.items[i + 1]] + l.items[l.items[i + 2]],
-            2 => l.items[l.items[i + 3]] = l.items[l.items[i + 1]] * l.items[l.items[i + 2]],
+        switch (a[i]) {
+            1 => a[a[i + 3]] = a[a[i + 1]] + a[a[i + 2]],
+            2 => a[a[i + 3]] = a[a[i + 1]] * a[a[i + 2]],
             99 => break,
             else => unreachable,
         }
     }
-    return l.items[0];
+    return a[0];
 }
 
-fn compute(l: std.ArrayList(u32)) !u32 {
+fn compute(alloc: std.mem.Allocator, l: std.ArrayList(u32)) !u32 {
     for (0..100) |i| {
         for (0..100) |ii| {
-            const ll = try l.clone();
-            defer ll.deinit();
-            if (simulate(ll, @intCast(i), @intCast(ii)) == 19690720) {
+            if (try simulate(alloc, l.items, @intCast(i), @intCast(ii)) == 19690720) {
                 return @intCast(100 * i + ii);
             }
         }
@@ -44,6 +44,6 @@ pub fn main() !void {
             try l.append(n);
         }
     }
-    const res = try compute(l);
+    const res = try compute(alloc, l);
     try std.io.getStdOut().writer().print("{}\n", .{res});
 }

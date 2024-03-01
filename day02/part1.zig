@@ -17,13 +17,14 @@ pub fn main() !void {
         }
     }
     {
-        l.items[1] = 12;
-        l.items[2] = 2;
+        const a = l.items;
+        a[1] = 12;
+        a[2] = 2;
         var i: usize = 0;
         while (true) : (i += 4) {
-            switch (l.items[i]) {
-                1 => l.items[l.items[i + 3]] = l.items[l.items[i + 1]] + l.items[l.items[i + 2]],
-                2 => l.items[l.items[i + 3]] = l.items[l.items[i + 1]] * l.items[l.items[i + 2]],
+            switch (a[i]) {
+                1 => a[a[i + 3]] = a[a[i + 1]] + a[a[i + 2]],
+                2 => a[a[i + 3]] = a[a[i + 1]] * a[a[i + 2]],
                 99 => break,
                 else => unreachable,
             }
