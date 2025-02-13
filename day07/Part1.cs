@@ -2,15 +2,6 @@ using System.Diagnostics;
 
 class Part1
 {
-    static T Unwrap<T>(T? v) where T : struct
-    {
-        return v switch
-        {
-            null => throw new UnreachableException(),
-            _ => (T)v,
-        };
-    }
-
     static void Run(Action a) => a();
 
     class Computer(IEnumerable<int> data)
@@ -142,7 +133,7 @@ class Part1
                 Computer computer = new(prog);
                 computer.AddInput(n);
                 computer.AddInput(amplifierSignal);
-                var newAmplifierSignal = Unwrap(computer.ComputeUntilNextOuput());
+                var newAmplifierSignal = (int)computer.ComputeUntilNextOuput()!;
                 HashSet<int> newHs = [.. hs];
                 newHs.Remove(n);
                 Solve(newAmplifierSignal, newHs);
