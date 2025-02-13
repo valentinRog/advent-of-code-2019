@@ -26,6 +26,7 @@ class Part1
             return m['1'] * m['2'];
         }
     }
+
     public static void Solve(string raw)
     {
         Layers layers = new(25, 6, raw);
