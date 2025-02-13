@@ -142,7 +142,7 @@ class Part2
         readonly IEnumerable<int> prog = prog;
 
         int? res = null;
-        public int? Res { get { return res; } }
+        public int? Res { get => res; }
 
         void Solve(HashSet<int> hs, List<int> a)
         {
