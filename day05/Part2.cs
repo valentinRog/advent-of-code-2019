@@ -100,8 +100,7 @@ class Part2
 
     public static void Solve(string raw)
     {
-        var data = raw.Split(',').Select(int.Parse).ToList();
-        var computer = new Computer(data);
+        var computer = new Computer(raw.Split(',').Select(int.Parse));
         var res = computer.Compute();
         Console.WriteLine(res);
     }

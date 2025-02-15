@@ -23,7 +23,7 @@ class Part1
 
     public static void Solve(string raw)
     {
-        var l = raw.Split(',').Select(int.Parse).ToList();
-        Console.WriteLine(Compute(l));
+        var res = Compute(raw.Split(',').Select(int.Parse));
+        Console.WriteLine(res);
     }
 }

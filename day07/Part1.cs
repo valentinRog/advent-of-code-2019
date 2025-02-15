@@ -145,8 +145,7 @@ class Part1
 
     public static void Solve(string raw)
     {
-        var data = raw.Split(',').Select(int.Parse).ToList();
-        Solver solver = new(data);
+        Solver solver = new(raw.Split(',').Select(int.Parse));
         solver.Solve();
         Console.WriteLine(solver.Res);
     }
