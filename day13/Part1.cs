@@ -1,9 +1,7 @@
 using System.Diagnostics;
-using System.Numerics;
 
 class Part1
 {
-
     static void Run(Action a) => a();
 
     class Computer(IEnumerable<long> data)
@@ -136,31 +134,14 @@ class Part1
     public static void Solve(string raw)
     {
         Computer computer = new(raw.Split(',').Select(long.Parse));
-        var white = new HashSet<Complex>();
-        var painted = new HashSet<Complex>();
-        Complex d = new(0, -1);
-        var z = Complex.Zero;
-        while (!computer.Ended)
+        var res = 0;
+        while (true)
         {
-            computer.AddInput(white.Contains(z) ? 1 : 0);
-            if (computer.ComputeUntilNextOuput() == 0)
-            {
-                white.Remove(z);
-            }
-            else
-            {
-                white.Add(z);
-                painted.Add(z);
-            }
-            if (computer.Ended) break;
-            d *= computer.ComputeUntilNextOuput() switch
-            {
-                0 => new Complex(0, 1),
-                1 => new Complex(0, -1),
-                _ => throw new UnreachableException(),
-            };
-            z += d;
+            var x = computer.ComputeUntilNextOuput();
+            if (x is null) break;
+            computer.ComputeUntilNextOuput();
+            if (computer.ComputeUntilNextOuput() == 2) res++;
         }
-        Console.WriteLine(painted.Count);
+        Console.WriteLine(res);
     }
 }

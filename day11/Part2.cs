@@ -128,11 +128,7 @@ class Part2
         public long? ComputeUntilNextOuput()
         {
             long? res = null;
-            while (!res.HasValue)
-            {
-                if (ended) return null;
-                res = Step();
-            }
+            while (!res.HasValue && !ended) res = Step();
             return res;
         }
     }

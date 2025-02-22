@@ -1,9 +1,7 @@
 using System.Diagnostics;
-using System.Numerics;
 
-class Part1
+class Part2
 {
-
     static void Run(Action a) => a();
 
     class Computer(IEnumerable<long> data)
@@ -20,6 +18,8 @@ class Part1
         public bool Ended { get => ended; }
 
         readonly Queue<long> inputs = new();
+
+        public void SetRegister(long i, long n) => a[i] = n;
 
         public void AddInput(long n) => inputs.Enqueue(n);
 
@@ -131,36 +131,54 @@ class Part1
             while (!res.HasValue && !ended) res = Step();
             return res;
         }
+
+        public bool NeedInput() => !ended && inputs.Count == 0 && ExtractOpcode(a.GetValueOrDefault(i)) == 3;
+    }
+
+    static int FinishGame(IEnumerable<long> prog)
+    {
+        Computer computer = new(prog);
+        computer.SetRegister(0, 2);
+        var ballX = 0;
+        var paddleX = 0;
+        var score = 0;
+        while (!computer.Ended)
+        {
+            while (!computer.NeedInput() && !computer.Ended)
+            {
+                var maybeX = computer.Step();
+                if (maybeX is null) continue;
+                var x = (int)maybeX!;
+                var y = (long)computer.ComputeUntilNextOuput()!;
+                var id = (long)computer.ComputeUntilNextOuput()!;
+                if (x == -1 && y == 0)
+                {
+                    score = (int)id;
+                }
+                else if (id == 3)
+                {
+                    paddleX = x;
+                }
+                else if (id == 4)
+                {
+                    ballX = x;
+                }
+            }
+            var input = paddleX switch
+            {
+                var n when n == ballX => 0,
+                var n when n > ballX => -1,
+                var n when n < ballX => 1,
+                _ => throw new UnreachableException(),
+            };
+            computer.AddInput(input);
+        }
+        return score;
     }
 
     public static void Solve(string raw)
     {
-        Computer computer = new(raw.Split(',').Select(long.Parse));
-        var white = new HashSet<Complex>();
-        var painted = new HashSet<Complex>();
-        Complex d = new(0, -1);
-        var z = Complex.Zero;
-        while (!computer.Ended)
-        {
-            computer.AddInput(white.Contains(z) ? 1 : 0);
-            if (computer.ComputeUntilNextOuput() == 0)
-            {
-                white.Remove(z);
-            }
-            else
-            {
-                white.Add(z);
-                painted.Add(z);
-            }
-            if (computer.Ended) break;
-            d *= computer.ComputeUntilNextOuput() switch
-            {
-                0 => new Complex(0, 1),
-                1 => new Complex(0, -1),
-                _ => throw new UnreachableException(),
-            };
-            z += d;
-        }
-        Console.WriteLine(painted.Count);
+        var prog = raw.Split(',').Select(long.Parse);
+        Console.WriteLine(FinishGame(prog));
     }
 }
