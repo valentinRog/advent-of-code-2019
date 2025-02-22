@@ -1,4 +1,4 @@
-﻿class Day09
+﻿class Day12
 {
     static void Main()
     {
