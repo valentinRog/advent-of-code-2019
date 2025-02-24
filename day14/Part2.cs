@@ -59,7 +59,7 @@ class Part2
     {
         static readonly long maxOre = 1000000000000;
 
-        Dictionary<string, Reaction> m = m;
+        readonly Dictionary<string, Reaction> m = m;
 
         long Cost(long fuel)
         {
