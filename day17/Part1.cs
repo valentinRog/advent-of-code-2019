@@ -1,8 +1,8 @@
-using System.Data;
 using System.Diagnostics;
 using System.Numerics;
+using System.Text;
 
-class Part2
+class Part1
 {
     static void Run(Action a) => a();
 
@@ -149,83 +149,41 @@ class Part2
         public bool NeedInput() => !ended && inputs.Count == 0 && ExtractOpcode(a.GetValueOrDefault(i)) == 3;
     }
 
-    class Solver
+    public static void Solve(string raw)
     {
-
-        readonly HashSet<Complex> walls = [];
-        Complex oxygenSystem;
-
-        static readonly Dictionary<Complex, int> dirToCode = new()
+        Computer computer = new(raw.Split(',').Select(long.Parse));
+        var sb = new StringBuilder();
+        while (true)
         {
-            { new (0, -1), 1 },
-            { new (0, 1), 2 },
-            { new (-1, 0), 3 },
-            { new (1, 0), 4 },
-        };
-
-        public Solver(IEnumerable<long> prog) => BFS(prog);
-
-        record State(Complex Z, int N, Computer Computer);
-        void BFS(IEnumerable<long> prog)
+            var n = computer.ComputeUntilNextOuput();
+            if (n is null) break;
+            sb.Append((char)n);
+        }
+        Dictionary<Complex, char> m = [];
+        foreach (var (line, y) in sb.ToString().Split('\n').Select((line, i) => (line, i)))
         {
-            var cache = new HashSet<Complex> { Complex.Zero };
-            var q = new Queue<State>([new(Complex.Zero, 0, new(prog))]);
-            while (q.Count > 0)
+            foreach (var (c, x) in line.Select((c, i) => (c, i))) m[new(x, y)] = c;
+        }
+        var res = 0;
+        foreach (var y in Enumerable.Range(0, (int)m.Keys.Select(z => z.Imaginary).Max()))
+        {
+            foreach (var x in Enumerable.Range(0, (int)m.Keys.Select(z => z.Real).Max()))
             {
-                var state = q.Dequeue();
-                var z = state.Z;
-                var k = state.N;
-                var computer = state.Computer;
-                foreach (
-                    var d in dirToCode
-                        .Keys
-                        .Where(d => !cache.Contains(z + d) && !walls.Contains(z + d))
+                var z = new Complex(x, y);
+                if (m[z] != '#') continue;
+                if (
+                    new Complex[] {
+                    new(0, -1),
+                    new(1, 0),
+                    new(0, 1),
+                    new(-1, 0),
+                 }.All(d => m.GetValueOrDefault(z + d) == '#')
                 )
                 {
-                    Computer newComputer = new(computer);
-                    newComputer.AddInput(dirToCode[d]);
-                    var n = newComputer.ComputeUntilNextOuput();
-                    if (n == 2) oxygenSystem = z + d;
-                    if (n == 0)
-                    {
-                        walls.Add(z + d);
-                    }
-                    else
-                    {
-                        cache.Add(z + d);
-                        q.Enqueue(new(z + d, k + 1, newComputer));
-                    }
+                    res += x * y;
                 }
             }
         }
-
-        readonly HashSet<Complex> air = [];
-
-        void ExpandAir()
-        {
-            foreach (var z in air.ToArray())
-            {
-                foreach (var d in dirToCode.Keys.Where(d => !walls.Contains(z + d))) air.Add(z + d);
-            }
-        }
-
-        public int Fill()
-        {
-            air.Add(oxygenSystem);
-            var prev = 1;
-            for (int i = 0; ; i++)
-            {
-                ExpandAir();
-                if (air.Count == prev) return i;
-                prev = air.Count;
-            }
-        }
-    }
-
-    public static void Solve(string raw)
-    {
-        Solver solver = new(raw.Split(',').Select(long.Parse));
-        var res = solver.Fill();
         Console.WriteLine(res);
     }
 }
