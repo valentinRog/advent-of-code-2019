@@ -1,59 +1,20 @@
 class Part1
 {
-    class Deck()
+    class Deck(int cardCount, int i0)
     {
-        LinkedList<int> l = new([.. Enumerable.Range(0, 10007)]);
-        public LinkedList<int> L { get => l; }
+        int i = i0;
+        public int I { get => i; }
 
-        public void Deal() => l = new([.. l.Reverse()]);
+        public void Deal() => i = cardCount - i - 1;
 
-        public void Cut(int n)
-        {
-            LinkedList<int> ll = [];
-            if (n > 0)
-            {
-                for (; n > 0; n--)
-                {
-                    ll.AddLast(l.First!.Value);
-                    l.RemoveFirst();
-                }
-                while (ll.Count > 0)
-                {
-                    l.AddLast(ll.First!.Value);
-                    ll.RemoveFirst();
-                }
-            }
-            else
-            {
-                for (; n < 0; n++)
-                {
-                    ll.AddFirst(l.Last!.Value);
-                    l.RemoveLast();
-                }
-                while (ll.Count > 0)
-                {
-                    l.AddFirst(ll.Last!.Value);
-                    ll.RemoveLast();
-                }
-            }
-        }
+        public void Cut(int n) => i = (i - n) % cardCount;
 
-        public void DealWithIncrement(int n)
-        {
-            int[] a = [.. l];
-            for (var i = 0; l.Count > 0; i = (i + n) % a.Length)
-            {
-                a[i] = l.First!.Value;
-                l.RemoveFirst();
-            }
-            l = new(a);
-        }
+        public void DealWithIncrement(int n) => i = i * n % cardCount;
     }
 
     public static void Solve(string raw)
     {
-        Console.WriteLine(raw);
-        var deck = new Deck();
+        var deck = new Deck(10007, 2019);
         foreach (var ins in raw.Split("\n"))
         {
             string[] arr = [.. ins.Split(" ")];
@@ -70,7 +31,6 @@ class Part1
                 deck.DealWithIncrement(int.Parse(arr[^1]));
             }
         }
-        var res = deck.L.Index().Where(e => e.Item == 2019).First().Index;
-        Console.WriteLine(res);
+        Console.WriteLine(deck.I);
     }
 }
