@@ -166,8 +166,6 @@ class Part2
             "AND C T",
             "NOT T T",
             "AND T J",
-            "NOT A T",
-            "OR T J",
             "RUN",
         ];
         foreach (var line in asm)
