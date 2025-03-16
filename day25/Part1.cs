@@ -1,0 +1,143 @@
+using System.Diagnostics;
+
+class Part1
+{
+    class Computer
+    {
+        readonly Dictionary<long, long> a;
+
+        long i = 0;
+
+        long relativeBase = 0;
+
+        bool ended = false;
+        public bool Ended { get => ended; }
+
+        readonly Queue<long> inputs = new();
+
+        public Computer(IEnumerable<long> data)
+        {
+            a = data.Select((e, i) => (e, i)).ToDictionary(e => (long)e.i, e => e.e);
+        }
+
+        public Computer(Computer other)
+        {
+            a = new Dictionary<long, long>(other.a);
+            i = other.i;
+            relativeBase = other.relativeBase;
+            ended = other.ended;
+            inputs = new Queue<long>(other.inputs);
+        }
+
+        public void SetRegister(long i, long n) => a[i] = n;
+
+        public void AddInput(long n) => inputs.Enqueue(n);
+
+        static long ExtractOpcode(long n) => n % 100;
+
+        static long ExtractMode(long n, int offset) => n / (long)Math.Pow(10, offset + 1) % 10;
+
+        long ExtractValue(int offset)
+        {
+            return ExtractMode(a[i], offset) switch
+            {
+                0 => a.GetValueOrDefault(a.GetValueOrDefault(i + offset)),
+                1 => a.GetValueOrDefault(i + offset),
+                2 => a.GetValueOrDefault(relativeBase + a.GetValueOrDefault(i + offset)),
+                _ => throw new UnreachableException(),
+            };
+        }
+
+        long ExtractAddress(int offset)
+        {
+            return ExtractMode(a[i], offset) switch
+            {
+                0 => a.GetValueOrDefault(i + offset),
+                2 => relativeBase + a.GetValueOrDefault(i + offset),
+                _ => throw new UnreachableException(),
+            };
+        }
+
+        public long? Step()
+        {
+            switch (ExtractOpcode(a.GetValueOrDefault(i)))
+            {
+                case 1:
+                    a[ExtractAddress(3)] = ExtractValue(1) + ExtractValue(2);
+                    i += 4;
+                    break;
+                case 2:
+                    a[ExtractAddress(3)] = ExtractValue(1) * ExtractValue(2);
+                    i += 4;
+                    break;
+                case 3:
+                    a[ExtractAddress(1)] = inputs.Dequeue();
+                    i += 2;
+                    break;
+                case 4:
+                    var output = ExtractValue(1);
+                    i += 2;
+                    return output;
+                case 5:
+                    if (ExtractValue(1) != 0)
+                    {
+                        i = ExtractValue(2);
+                    }
+                    else
+                    {
+                        i += 3;
+                    }
+                    break;
+                case 6:
+                    if (ExtractValue(1) == 0)
+                    {
+                        i = ExtractValue(2);
+                    }
+                    else
+                    {
+                        i += 3;
+                    }
+                    break;
+                case 7:
+                    a[ExtractAddress(3)] = ExtractValue(1) < ExtractValue(2) ? 1 : 0;
+                    i += 4;
+                    break;
+                case 8:
+                    a[ExtractAddress(3)] = ExtractValue(1) == ExtractValue(2) ? 1 : 0;
+                    i += 4;
+                    break;
+                case 9:
+                    relativeBase += ExtractValue(1);
+                    i += 2;
+                    break;
+            }
+            if (a.GetValueOrDefault(i) == 99) ended = true;
+            return null;
+        }
+
+        public long? ComputeUntilNextOuput()
+        {
+            long? res = null;
+            while (!res.HasValue && !ended) res = Step();
+            return res;
+        }
+
+        public bool NeedInput() => !ended && inputs.Count == 0 && ExtractOpcode(a.GetValueOrDefault(i)) == 3;
+    }
+
+    public static void Solve(string raw)
+    {
+        Computer computer = new(raw.Split(',').Select(long.Parse));
+        while (!computer.Ended)
+        {
+            if (computer.NeedInput())
+            {
+                var line = Console.ReadLine()!.Trim() + "\n";
+                foreach (var c in line) computer.AddInput(c);
+            }
+            var n = computer.Step();
+            if (n is null) continue;
+            Console.Write((char)n);
+        }
+    }
+}
