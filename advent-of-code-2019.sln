@@ -47,6 +47,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "day21", "day21\day21.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "day22", "day22\day22.csproj", "{E21FDE71-C893-4EDF-A41F-48A9E8F81A9B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "day23", "day23\day23.csproj", "{CAF53199-4F1E-4607-AF70-65D48F665F97}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -321,6 +323,18 @@ Global
 		{E21FDE71-C893-4EDF-A41F-48A9E8F81A9B}.Release|x64.Build.0 = Release|Any CPU
 		{E21FDE71-C893-4EDF-A41F-48A9E8F81A9B}.Release|x86.ActiveCfg = Release|Any CPU
 		{E21FDE71-C893-4EDF-A41F-48A9E8F81A9B}.Release|x86.Build.0 = Release|Any CPU
+		{CAF53199-4F1E-4607-AF70-65D48F665F97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAF53199-4F1E-4607-AF70-65D48F665F97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAF53199-4F1E-4607-AF70-65D48F665F97}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CAF53199-4F1E-4607-AF70-65D48F665F97}.Debug|x64.Build.0 = Debug|Any CPU
+		{CAF53199-4F1E-4607-AF70-65D48F665F97}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CAF53199-4F1E-4607-AF70-65D48F665F97}.Debug|x86.Build.0 = Debug|Any CPU
+		{CAF53199-4F1E-4607-AF70-65D48F665F97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAF53199-4F1E-4607-AF70-65D48F665F97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAF53199-4F1E-4607-AF70-65D48F665F97}.Release|x64.ActiveCfg = Release|Any CPU
+		{CAF53199-4F1E-4607-AF70-65D48F665F97}.Release|x64.Build.0 = Release|Any CPU
+		{CAF53199-4F1E-4607-AF70-65D48F665F97}.Release|x86.ActiveCfg = Release|Any CPU
+		{CAF53199-4F1E-4607-AF70-65D48F665F97}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
