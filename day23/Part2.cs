@@ -2,7 +2,6 @@ using System.Diagnostics;
 
 class Part2
 {
-    static void Run(Action a) => a();
     static T Run<T>(Func<T> f) => f();
 
     class Computer
@@ -62,37 +61,27 @@ class Part2
             };
         }
 
-        public long? Step()
+         public long? Step()
         {
-            long? output = null;
-            Run(ExtractOpcode(a.GetValueOrDefault(i)) switch
+            switch (ExtractOpcode(a.GetValueOrDefault(i)))
             {
-                1 => () =>
-                {
+                case 1:
                     a[ExtractAddress(3)] = ExtractValue(1) + ExtractValue(2);
                     i += 4;
-                }
-                ,
-                2 => () =>
-                {
+                    break;
+                case 2:
                     a[ExtractAddress(3)] = ExtractValue(1) * ExtractValue(2);
                     i += 4;
-                }
-                ,
-                3 => () =>
-                {
+                    break;
+                case 3:
                     a[ExtractAddress(1)] = inputs.Dequeue();
                     i += 2;
-                }
-                ,
-                4 => () =>
-                {
-                    output = ExtractValue(1);
+                    break;
+                case 4:
+                    var output = ExtractValue(1);
                     i += 2;
-                }
-                ,
-                5 => () =>
-                {
+                    return output;
+                case 5:
                     if (ExtractValue(1) != 0)
                     {
                         i = ExtractValue(2);
@@ -101,10 +90,8 @@ class Part2
                     {
                         i += 3;
                     }
-                }
-                ,
-                6 => () =>
-                {
+                    break;
+                case 6:
                     if (ExtractValue(1) == 0)
                     {
                         i = ExtractValue(2);
@@ -113,30 +100,22 @@ class Part2
                     {
                         i += 3;
                     }
-                }
-                ,
-                7 => () =>
-                {
+                    break;
+                case 7:
                     a[ExtractAddress(3)] = ExtractValue(1) < ExtractValue(2) ? 1 : 0;
                     i += 4;
-                }
-                ,
-                8 => () =>
-                {
+                    break;
+                case 8:
                     a[ExtractAddress(3)] = ExtractValue(1) == ExtractValue(2) ? 1 : 0;
                     i += 4;
-                }
-                ,
-                9 => () =>
-                {
+                    break;
+                case 9:
                     relativeBase += ExtractValue(1);
                     i += 2;
-                }
-                ,
-                _ => throw new UnreachableException(),
-            });
+                    break;
+            }
             if (a.GetValueOrDefault(i) == 99) ended = true;
-            return output;
+            return null;
         }
 
         public long? ComputeUntilNextOuput()

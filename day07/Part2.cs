@@ -2,8 +2,6 @@ using System.Diagnostics;
 
 class Part2
 {
-    static void Run(Action a) => a();
-
     class Computer(IEnumerable<int> data)
     {
         readonly int[] a = [.. data];
@@ -33,35 +31,26 @@ class Part2
 
         public int? Step()
         {
-            int? output = null;
-            Run(ExtractOpcode(a[i]) switch
+            switch (ExtractOpcode(a[i]))
             {
-                1 => () =>
-                {
+                case 1:
                     a[a[i + 3]] = ExtractValue(1) + ExtractValue(2);
                     i += 4;
-                }
-                ,
-                2 => () =>
-                {
+                    break;
+                case 2:
                     a[a[i + 3]] = ExtractValue(1) * ExtractValue(2);
                     i += 4;
-                }
-                ,
-                3 => () =>
-                {
+                    break;
+                case 3:
+
                     a[a[i + 1]] = inputs.Dequeue();
                     i += 2;
-                }
-                ,
-                4 => () =>
-                {
-                    output = ExtractValue(1);
+                    break;
+                case 4:
+                    var output = ExtractValue(1);
                     i += 2;
-                }
-                ,
-                5 => () =>
-                {
+                    return output;
+                case 5:
                     if (ExtractValue(1) != 0)
                     {
                         i = ExtractValue(2);
@@ -70,10 +59,8 @@ class Part2
                     {
                         i += 3;
                     }
-                }
-                ,
-                6 => () =>
-                {
+                    break;
+                case 6:
                     if (ExtractValue(1) == 0)
                     {
                         i = ExtractValue(2);
@@ -82,24 +69,18 @@ class Part2
                     {
                         i += 3;
                     }
-                }
-                ,
-                7 => () =>
-                {
+                    break;
+                case 7:
                     a[a[i + 3]] = ExtractValue(1) < ExtractValue(2) ? 1 : 0;
                     i += 4;
-                }
-                ,
-                8 => () =>
-                {
+                    break;
+                case 8:
                     a[a[i + 3]] = ExtractValue(1) == ExtractValue(2) ? 1 : 0;
                     i += 4;
-                }
-                ,
-                _ => throw new UnreachableException(),
-            });
+                    break;
+            }
             if (a[i] == 99) ended = true;
-            return output;
+            return null;
         }
 
         public int? ComputeUntilNextOuput()

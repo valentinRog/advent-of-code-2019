@@ -2,7 +2,6 @@ using System.Diagnostics;
 
 class Part2
 {
-    static void Run(Action a) => a();
     static T Run<T>(Func<T> f) => f();
 
     class Computer(IEnumerable<int> data)
@@ -16,12 +15,11 @@ class Part2
             int[] a = [.. this.a];
             for (var i = 0; a[i] != 99; i += 4)
             {
-                Run(a[i] switch
+                switch (a[i])
                 {
-                    1 => () => a[a[i + 3]] = a[a[i + 1]] + a[a[i + 2]],
-                    2 => () => a[a[i + 3]] = a[a[i + 1]] * a[a[i + 2]],
-                    _ => throw new UnreachableException(),
-                });
+                    case 1: a[a[i + 3]] = a[a[i + 1]] + a[a[i + 2]]; break;
+                    case 2: a[a[i + 3]] = a[a[i + 1]] * a[a[i + 2]]; break;
+                }
             }
             return a[0];
         }

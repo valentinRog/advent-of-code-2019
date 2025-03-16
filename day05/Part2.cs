@@ -2,8 +2,6 @@ using System.Diagnostics;
 
 class Part2
 {
-    static void Run(Action a) => a();
-
     class Computer(IEnumerable<int> data)
     {
         readonly int[] a = [.. data];
@@ -27,34 +25,25 @@ class Part2
             int? res = null;
             for (var i = 0; a[i] != 99;)
             {
-                Run(ExtractOpcode(a[i]) switch
+                switch (ExtractOpcode(a[i]))
                 {
-                    1 => () =>
-                    {
+                    case 1:
                         a[a[i + 3]] = ExtractValue(i, 1) + ExtractValue(i, 2);
                         i += 4;
-                    }
-                    ,
-                    2 => () =>
-                    {
+                        break;
+                    case 2:
                         a[a[i + 3]] = ExtractValue(i, 1) * ExtractValue(i, 2);
                         i += 4;
-                    }
-                    ,
-                    3 => () =>
-                    {
+                        break;
+                    case 3:
                         a[a[i + 1]] = 5;
                         i += 2;
-                    }
-                    ,
-                    4 => () =>
-                    {
+                        break;
+                    case 4:
                         res = ExtractValue(i, 1);
                         i += 2;
-                    }
-                    ,
-                    5 => () =>
-                    {
+                        break;
+                    case 5:
                         if (ExtractValue(i, 1) != 0)
                         {
                             i = ExtractValue(i, 2);
@@ -63,10 +52,8 @@ class Part2
                         {
                             i += 3;
                         }
-                    }
-                    ,
-                    6 => () =>
-                    {
+                        break;
+                    case 6:
                         if (ExtractValue(i, 1) == 0)
                         {
                             i = ExtractValue(i, 2);
@@ -75,23 +62,16 @@ class Part2
                         {
                             i += 3;
                         }
-                    }
-                    ,
-                    7 => () =>
-                    {
+                        break;
+                    case 7:
                         a[a[i + 3]] = ExtractValue(i, 1) < ExtractValue(i, 2) ? 1 : 0;
                         i += 4;
-                    }
-                    ,
-                    8 => () =>
-                    {
+                        break;
+                    case 8:
                         a[a[i + 3]] = ExtractValue(i, 1) == ExtractValue(i, 2) ? 1 : 0;
                         i += 4;
-                    }
-                    ,
-                    _ => throw new UnreachableException()
-                    ,
-                });
+                        break;
+                }
             }
             if (res is null) throw new UnreachableException();
             return res.Value;
